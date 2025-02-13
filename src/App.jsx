@@ -61,17 +61,17 @@ function ProductTable({ products, filterText, inStockOnly }) {
 
 function SearchBar({ filterText, setFilterText, inStockOnly, setinStockOnly }) {
   return (
-    <form className="mb-6">
+    <form>
       <input
         type="text"
         value={filterText}
         placeholder="Search products"
         onChange={e => setFilterText(e.target.value)}
-        className="border px-3 py-2 rounded-md w-full max-w-xs"
+        className="border px-3 py-2 mb-2 rounded-md w-full max-w-xs"
       />
 
       <div>
-        <label className="inline-flex items-center mt-2">
+        <label className="items-center mt-2">
           <input
             type="checkbox"
             checked={inStockOnly}
