@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function ProductRow({ product }) {
   return (
@@ -85,9 +85,38 @@ function SearchBar({ filterText, setFilterText, inStockOnly, setinStockOnly }) {
   );
 }
 
-function FilterableProductsTable({ products }) {
+function FilterableProductsTable() {
   const [filterText, setFilterText] = useState('');
   const [inStockOnly, setinStockOnly] = useState(false);
+  const [storedProducts, setStoredProducts] = useState([]);
+
+  // On component mount, check if products are already in localStorage
+  useEffect(() => {
+    const storedData = localStorage.getItem('products');
+    if (!storedData) {
+      // If products are not stored, save the default products
+      const defaultProducts = [
+        { category: 'Fruits', price: '$1', stocked: false, name: 'Apple' },
+        { category: 'Fruits', price: '$1', stocked: false, name: 'Dragonfruit' },
+        { category: 'Fruits', price: '$2', stocked: false, name: 'Passionfruit' },
+        { category: 'Vegetables', price: '$2', stocked: true, name: 'Spinach' },
+        { category: 'Vegetables', price: '$4', stocked: false, name: 'Pumpkin' },
+        { category: 'Vegetables', price: '$1', stocked: false, name: 'Peas' }
+      ];
+      localStorage.setItem('products', JSON.stringify(defaultProducts));
+      setStoredProducts(defaultProducts);
+    } else {
+      // If products are already stored, load them
+      setStoredProducts(JSON.parse(storedData));
+    }
+  }, []); // Empty dependency array ensures this effect runs once on mount
+
+  // Update localStorage whenever storedProducts change
+  useEffect(() => {
+    if (storedProducts.length > 0) {
+      localStorage.setItem('products', JSON.stringify(storedProducts));
+    }
+  }, [storedProducts]); // Runs whenever storedProducts is updated
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -98,7 +127,7 @@ function FilterableProductsTable({ products }) {
         setinStockOnly={setinStockOnly}
       />
       <ProductTable
-        products={products}
+        products={storedProducts}
         filterText={filterText}
         inStockOnly={inStockOnly}
       />
@@ -106,17 +135,8 @@ function FilterableProductsTable({ products }) {
   );
 }
 
-const PRODUCTS = [
-  { category: 'Fruits', price: '$1', stocked: false, name: 'Apple' },
-  { category: 'Fruits', price: '$1', stocked: false, name: 'Dragonfruit' },
-  { category: 'Fruits', price: '$2', stocked: false, name: 'Passionfruit' },
-  { category: 'Vegetables', price: '$2', stocked: true, name: 'Spinach' },
-  { category: 'Vegetables', price: '$4', stocked: false, name: 'Pumpkin' },
-  { category: 'Vegetables', price: '$1', stocked: false, name: 'Peas' }
-];
-
 function App() {
-  return <FilterableProductsTable products={PRODUCTS} />;
+  return <FilterableProductsTable />;
 }
 
 export default App;
