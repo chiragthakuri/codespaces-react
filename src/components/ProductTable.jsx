@@ -3,9 +3,9 @@ import React from 'react';
 import ProductRow from './ProductRow';
 import ProductCategoryRow from './ProductCategoryRow';
 
-function ProductTable({ products, filterText, inStockOnly }) {
+function ProductTable({ products, filterText, inStockOnly, onDelete }) {
   const rows = [];
-  let lastCategory = null;
+  const categories = new Set();
 
   const filteredProducts = products.filter(product => {
     const isInStock = inStockOnly ? product.stocked : true;
@@ -20,12 +20,13 @@ function ProductTable({ products, filterText, inStockOnly }) {
   }
 
   filteredProducts.forEach(product => {
-    if (product.category !== lastCategory) {
+    if (!categories.has(product.category)) {
       rows.push(<ProductCategoryRow key={product.category} category={product.category} />);
+      categories.add(product.category);
     }
 
-    rows.push(<ProductRow key={product.name} product={product} />);
-    lastCategory = product.category;
+    rows.push(<ProductRow key={product.name} product={product} onDelete={onDelete} />);
+    
   });
 
   return (
@@ -34,6 +35,8 @@ function ProductTable({ products, filterText, inStockOnly }) {
         <tr>
           <th className="py-2 px-4 text-left text-sm font-semibold text-gray-600">Name</th>
           <th className="py-2 px-4 text-left text-sm font-semibold text-gray-600">Price</th>
+          <th className="py-2 px-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+        
         </tr>
       </thead>
       <tbody>{rows}</tbody>

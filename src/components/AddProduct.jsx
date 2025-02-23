@@ -1,19 +1,29 @@
 // src/components/AddProduct.js
-
 import React, { useState } from 'react';
 
 function AddProduct({ onAddProduct }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(''); // Make sure category is a state
   const [stocked, setStocked] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!category) {
+      alert("Please select a category");
+      return; // Prevent form submission if category is empty
+    }
+
+    // Log the current values before adding
+    console.log("Adding product:", { name, price, category, stocked });
+    
     // Create new product object
     const newProduct = { name, price, category, stocked };
+    
     // Call onAddProduct prop to update the list in parent component
     onAddProduct(newProduct);
+    
     // Reset form fields
     setName('');
     setPrice('');
@@ -39,14 +49,20 @@ function AddProduct({ onAddProduct }) {
         required
         className="border px-3 py-2 rounded-md w-full"
       />
-      <input
-        type="text"
+      <select
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        placeholder="Category"
         required
         className="border px-3 py-2 rounded-md w-full"
-      />
+      >
+        <option value="">Select Category</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Vegetables">Vegetables</option>
+        <option value="Dairy">Dairy</option>
+        {/* Add more categories if needed */}
+      </select>
+
+      <br />
       <label>
         In Stock
         <input
