@@ -84,10 +84,7 @@ function FilterableProductsTable() {
         inStockOnly={inStockOnly}
         onDelete={handleDelete}
       />
-      {/* Example button to add a new product */}
-      <button onClick={() => addProduct({ name: 'New Apple', category: 'Fruits', price: '$2', stocked: true })}>
-        Add Product
-      </button>
+
     </div>
   );
 }
