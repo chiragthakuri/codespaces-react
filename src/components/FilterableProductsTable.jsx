@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Client, Databases } from 'appwrite';
 import SearchBar from './SearchBar';
 import ProductTable from './ProductTable';
 import AddProduct from './AddProduct';
@@ -8,18 +7,17 @@ function FilterableProductsTable() {
   const [filterText, setFilterText] = useState('');
   const [inStockOnly, setinStockOnly] = useState(false);
   const [storedProducts, setStoredProducts] = useState([]);
+  const [showAddProductModal, setShowAddProductModal] = useState(false); // State to toggle modal
 
-  // Sort products by category and name for consistent order
   const sortProducts = (products) => {
     return products.sort((a, b) => {
       if (a.category === b.category) {
-        return a.name.localeCompare(b.name); // Sort alphabetically by product name within category
+        return a.name.localeCompare(b.name);
       }
-      return a.category.localeCompare(b.category); // Sort by category alphabetically
+      return a.category.localeCompare(b.category);
     });
   };
 
-  // On component mount, check if products are already in localStorage
   useEffect(() => {
     const storedData = localStorage.getItem('products');
     if (!storedData) {
@@ -48,16 +46,14 @@ function FilterableProductsTable() {
   useEffect(() => {
     if (storedProducts.length > 0) {
       localStorage.setItem('products', JSON.stringify(storedProducts));
-      console.log("Updated storedProducts:", storedProducts);
     }
   }, [storedProducts]);
 
-  // Handle adding a product
   const handleAddProduct = (newProduct) => {
-    console.log("Product added:", newProduct);
     const updatedProducts = [...storedProducts, newProduct];
     const sortedUpdatedProducts = sortProducts(updatedProducts);
     setStoredProducts(sortedUpdatedProducts);
+    setShowAddProductModal(false); // Close the modal after adding
   };
 
   const handleDelete = (productName) => {
@@ -76,8 +72,6 @@ function FilterableProductsTable() {
         setinStockOnly={setinStockOnly}
       />
 
-      <AddProduct onAddProduct={handleAddProduct} />
-
       <ProductTable
         products={storedProducts}
         filterText={filterText}
@@ -85,6 +79,29 @@ function FilterableProductsTable() {
         onDelete={handleDelete}
       />
 
+      {/* Button to open the Add Product modal */}
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+        onClick={() => setShowAddProductModal(true)}
+      >
+        Add Product
+      </button>
+
+      {/* Conditional rendering for the modal */}
+      {showAddProductModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Add a New Product</h2>
+            <AddProduct onAddProduct={handleAddProduct} />
+            <button
+              className="bg-red-500 text-white px-4 py-2 mt-4 rounded"
+              onClick={() => setShowAddProductModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
