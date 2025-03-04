@@ -1,7 +1,7 @@
 // src/components/ProductRow.js
 import React from 'react';
 
-function ProductRow({ product, onDelete }) {
+function ProductRow({ product, onDelete, onEdit }) {
   return (
     <tr className="border-t hover:bg-gray-50">
       <td className={`py-2 px-4 ${product.stocked ? 'text-black' : 'text-red-500'}`}>
@@ -9,6 +9,13 @@ function ProductRow({ product, onDelete }) {
       </td>
       <td className="py-2 px-4">{product.price}</td>
       <td className="py-2 px-4">
+        <button
+          onClick={() => onEdit(product)} // Trigger delete on click
+          className="text-red-500 hover:text-red-700"
+        >
+          Edit
+        </button>
+        
         <button
           onClick={() => onDelete(product.name)} // Trigger delete on click
           className="text-red-500 hover:text-red-700"

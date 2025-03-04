@@ -25,7 +25,7 @@ function ProductTable({ products, filterText, inStockOnly, onDelete }) {
       categories.add(product.category);
     }
 
-    rows.push(<ProductRow key={product.name} product={product} onDelete={onDelete} />);
+    rows.push(<ProductRow key={product.name} product={product} onDelete={onDelete} onEdit={onEdit} />);
     
   });
 
